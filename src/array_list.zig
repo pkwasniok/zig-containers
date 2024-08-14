@@ -6,13 +6,13 @@ pub fn ArrayList(comptime T: type) type {
 
         allocator: std.mem.Allocator,
         buffer: []T,
-        len: usize,
+        items: []T,
 
         pub fn init(allocator: std.mem.Allocator) Self {
             return Self{
                 .allocator = allocator,
                 .buffer = &[_]T{},
-                .len = 0,
+                .items = &[_]T{},
             };
         }
 
@@ -31,33 +31,29 @@ pub fn ArrayList(comptime T: type) type {
         }
 
         pub fn push_front(self: *Self, item: T) !void {
-            if (self.buffer.len < self.len + 1) {
+            if (self.buffer.len < self.items.len + 1) {
                 try self.grow((self.buffer.len + 1) * 2);
             }
 
-            self.buffer[self.len] = item;
-            self.len += 1;
+            self.buffer[self.items.len] = item;
+            self.items = self.buffer[0 .. self.items.len + 1];
         }
 
         pub fn pop_front(self: *Self) ?T {
-            if (self.len == 0) {
+            if (self.items.len == 0) {
                 return null;
             }
 
-            self.len -= 1;
-            return self.buffer[self.len];
+            self.items = self.buffer[0 .. self.items.len - 1];
+            return self.buffer[self.items.len];
         }
 
         pub fn get(self: *Self, index: usize) ?T {
-            if (index >= self.len) {
+            if (index >= self.items.len) {
                 return null;
             }
 
             return self.buffer[index];
-        }
-
-        pub fn items(self: *Self) []T {
-            return self.buffer[0..self.len];
         }
     };
 }
