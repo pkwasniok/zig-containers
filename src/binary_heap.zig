@@ -99,13 +99,4 @@ test "BinaryHeap" {
     try binary_heap.push(7);
     try binary_heap.push(3);
     try binary_heap.push(1);
-
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
-    std.debug.print("{?d}\n", .{binary_heap.pop()});
 }
