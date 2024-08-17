@@ -3,11 +3,20 @@ const std = @import("std");
 // Singly linked list
 //
 // Diagram:
-// *-> *head
-// |
+//      *prev
+//        |
+// value  |
+//   |    |
+// ---------
+// | x | * |
+// ---------
+//
+//   *head
+//     |
 // ---------    ---------    ---------    ---------
 // | 1 | * | -> | 2 | * | -> | 3 | * | -> | 4 | * | -> null
 // ---------    ---------    ---------    --------
+// |<- FRONT                                       BACK ->|
 //
 // Operations:
 // - push
@@ -21,7 +30,7 @@ pub fn SinglyLinkedList(comptime T: type) type {
 
         const Node = struct {
             value: T,
-            next: ?*Node,
+            prev: ?*Node,
         };
 
         allocator: std.mem.Allocator,
@@ -42,7 +51,7 @@ pub fn SinglyLinkedList(comptime T: type) type {
             // Create new node
             var node = try self.allocator.create(Node);
             node.value = item;
-            node.next = self.head;
+            node.prev = self.head;
 
             // Update head
             self.head = node;
@@ -51,7 +60,7 @@ pub fn SinglyLinkedList(comptime T: type) type {
         pub fn pop(self: *Self) ?T {
             if (self.head) |node| {
                 // Update head & copy value
-                self.head = node.next;
+                self.head = node.prev;
                 const item = node.value;
 
                 // Destroy node
