@@ -92,10 +92,12 @@ test "BinaryHeap" {
     var binary_heap = BinaryHeap(usize).init(allocator);
     defer binary_heap.deinit();
 
+    // Add items 127, 126, 125, ..., 0
     for (0..128) |item| {
         try binary_heap.push(127 - item);
     }
 
+    // Check if items are retrieve in order 0, 1, 2, ..., 127
     var i: usize = 0;
     while (binary_heap.pop()) |item| {
         try std.testing.expect(item == i);

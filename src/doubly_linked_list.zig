@@ -168,3 +168,17 @@ test "DoublyLinkedList" {
     try std.testing.expect(linked_list.pop_front() == null);
     try std.testing.expect(linked_list.pop_back() == null);
 }
+
+test "DoublyLinkedList deinit" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.debug.assert(gpa.deinit() == .ok);
+
+    const allocator = gpa.allocator();
+
+    var linked_list = DoublyLinkedList(u32).init(allocator);
+    defer linked_list.deinit();
+
+    try linked_list.push_front(1);
+    try linked_list.push_front(2);
+    try linked_list.push_front(3);
+}

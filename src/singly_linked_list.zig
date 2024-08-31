@@ -92,3 +92,17 @@ test "SinglyLinkedList" {
     try std.testing.expect(linked_list.pop() == 1);
     try std.testing.expect(linked_list.pop() == null);
 }
+
+test "SinglyLinkedList deinit" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.debug.assert(gpa.deinit() == .ok);
+
+    const allocator = gpa.allocator();
+
+    var linked_list = SinglyLinkedList(u32).init(allocator);
+    defer linked_list.deinit();
+
+    try linked_list.push(1);
+    try linked_list.push(2);
+    try linked_list.push(3);
+}
