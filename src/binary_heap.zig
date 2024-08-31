@@ -1,6 +1,21 @@
 const std = @import("std");
 const ArrayList = @import("./array_list.zig").ArrayList;
 
+//
+// # Binary heap
+//
+// ## Memory layout
+//
+// It's binary tree represented as array
+//
+// ## Operations
+//
+// - `push`
+//   Insert new elements onto heap. Time complexity: O(1).
+// - `pop`
+//   Remove lowest element from heap. Time complexity: O(log n).
+//
+
 pub fn BinaryHeap(comptime T: type) type {
     return struct {
         const Self = @This();

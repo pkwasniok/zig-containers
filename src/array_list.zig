@@ -1,5 +1,27 @@
 const std = @import("std");
 
+//
+// # Array list
+//
+// ## Memory layout
+//
+// |--------------BUFFER---------------|
+// |                                   |
+// *---*---*---*---*---*---*---*---*---*
+// | 1 | 2 | 3 |   |   |   |   |   |   |
+// *---*---*---*---*---*---*---*---*---*
+// |           |
+// |---ITEMS---|
+//
+// ## Oprtaions
+// - `push`
+//   Insert new elements in front of the list. Time complexity: O(1).
+// - `pop`
+//   Remove and return element from the front of the list. Time complexity: O(1).
+// - `get`
+//   Seek element at i-th index of the list. Time complexity: O(1).
+//
+
 pub fn ArrayList(comptime T: type) type {
     return struct {
         const Self = @This();

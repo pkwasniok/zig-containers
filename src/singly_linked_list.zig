@@ -1,5 +1,6 @@
 const std = @import("std");
 
+//
 // # Singly linked list
 //
 // ## Diagram
@@ -23,6 +24,7 @@ const std = @import("std");
 //   Insert new element into list. Time complexity: O(1).
 // - `pop`
 //   Remove youngest element from list. Time complexity: O(1).
+//
 
 pub fn SinglyLinkedList(comptime T: type) type {
     return struct {

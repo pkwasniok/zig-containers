@@ -1,5 +1,6 @@
 const std = @import("std");
 
+//
 // # Doubly linked list
 //
 // ## Diagram
@@ -29,6 +30,7 @@ const std = @import("std");
 //   Remove and return element from front of the list. Time complexity: O(1).
 // - `pop_back`
 //   Remove and return element from back of the list. Time complexity: O(1).
+//
 
 pub fn DoublyLinkedList(comptime T: type) type {
     return struct {
