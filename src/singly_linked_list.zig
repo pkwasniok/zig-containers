@@ -1,8 +1,8 @@
 const std = @import("std");
 
-// Singly linked list
+// # Singly linked list
 //
-// Diagram:
+// ## Diagram
 //      *prev
 //        |
 // value  |
@@ -18,10 +18,10 @@ const std = @import("std");
 // ---------    ---------    ---------    --------
 // |<- FRONT                                       BACK ->|
 //
-// Operations:
-// - push
+// ## Operations
+// - `push`
 //   Insert new element into list. Time complexity: O(1).
-// - pop
+// - `pop`
 //   Remove youngest element from list. Time complexity: O(1).
 
 pub fn SinglyLinkedList(comptime T: type) type {

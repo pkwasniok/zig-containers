@@ -20,15 +20,15 @@ pub fn BinaryHeap(comptime T: type) type {
         }
 
         pub fn push(self: *Self, item: T) !void {
-            try self.tree.push_front(item);
+            try self.tree.push(item);
 
-            var current_index: usize = self.tree.items.len - 1;
+            var current_index: usize = self.tree.len() - 1;
             var parent_index: usize = (current_index -| 1) / 2;
 
-            while (self.tree.items[current_index] < self.tree.items[parent_index]) {
-                const temp = self.tree.items[current_index];
-                self.tree.items[current_index] = self.tree.items[parent_index];
-                self.tree.items[parent_index] = temp;
+            while (self.tree.get(current_index).? < self.tree.get(parent_index).?) {
+                const temp = self.tree.get(current_index).?;
+                self.tree.items.?[current_index] = self.tree.get(parent_index).?;
+                self.tree.items.?[parent_index] = temp;
 
                 current_index = parent_index;
                 parent_index = (current_index -| 1) / 2;
@@ -36,17 +36,17 @@ pub fn BinaryHeap(comptime T: type) type {
         }
 
         pub fn pop(self: *Self) ?T {
-            if (self.tree.items.len == 0) {
+            if (self.tree.len() == 0) {
                 return null;
             }
 
-            if (self.tree.items.len == 1) {
-                return self.tree.pop_front();
+            if (self.tree.len() == 1) {
+                return self.tree.pop();
             }
 
-            const result = self.tree.items[0];
+            const result = self.tree.get(0).?;
 
-            self.tree.items[0] = self.tree.pop_front().?;
+            self.tree.items.?[0] = self.tree.pop().?;
 
             var current_index: usize = 0;
             var left_child_index: usize = current_index * 2 + 1;
@@ -55,9 +55,9 @@ pub fn BinaryHeap(comptime T: type) type {
             while (true) {
                 var lowest_child_index: ?usize = null;
 
-                if (self.tree.items.len >= right_child_index + 1 and self.tree.items[right_child_index] < self.tree.items[left_child_index]) {
+                if (self.tree.len() >= right_child_index + 1 and self.tree.get(right_child_index).? < self.tree.get(left_child_index).?) {
                     lowest_child_index = right_child_index;
-                } else if (self.tree.items.len >= left_child_index + 1) {
+                } else if (self.tree.len() >= left_child_index + 1) {
                     lowest_child_index = left_child_index;
                 }
 
@@ -65,10 +65,10 @@ pub fn BinaryHeap(comptime T: type) type {
                     break;
                 }
 
-                if (self.tree.items[current_index] > self.tree.items[lowest_child_index.?]) {
-                    const temp = self.tree.items[current_index];
-                    self.tree.items[current_index] = self.tree.items[lowest_child_index.?];
-                    self.tree.items[lowest_child_index.?] = temp;
+                if (self.tree.get(current_index).? > self.tree.get(lowest_child_index.?).?) {
+                    const temp = self.tree.get(current_index).?;
+                    self.tree.items.?[current_index] = self.tree.get(lowest_child_index.?).?;
+                    self.tree.items.?[lowest_child_index.?] = temp;
                 } else {
                     break;
                 }
@@ -85,18 +85,34 @@ pub fn BinaryHeap(comptime T: type) type {
 
 test "BinaryHeap" {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    // defer std.debug.assert(gpa.deinit() == .ok);
+    defer std.debug.assert(gpa.deinit() == .ok);
+
+    const allocator = gpa.allocator();
+
+    var binary_heap = BinaryHeap(usize).init(allocator);
+    defer binary_heap.deinit();
+
+    for (0..128) |item| {
+        try binary_heap.push(127 - item);
+    }
+
+    var i: usize = 0;
+    while (binary_heap.pop()) |item| {
+        try std.testing.expect(item == i);
+        i += 1;
+    }
+}
+
+test "BinaryHeap deinit" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.debug.assert(gpa.deinit() == .ok);
 
     const allocator = gpa.allocator();
 
     var binary_heap = BinaryHeap(u32).init(allocator);
     defer binary_heap.deinit();
 
-    try binary_heap.push(5);
-    try binary_heap.push(6);
-    try binary_heap.push(4);
-    try binary_heap.push(2);
-    try binary_heap.push(7);
-    try binary_heap.push(3);
     try binary_heap.push(1);
+    try binary_heap.push(2);
+    try binary_heap.push(3);
 }

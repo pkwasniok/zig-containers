@@ -1,8 +1,8 @@
 const std = @import("std");
 
-// Doubly linked list
+// # Doubly linked list
 //
-// Diagram:
+// ## Diagram
 //         *prev
 //           |
 //     value |
@@ -20,14 +20,14 @@ const std = @import("std");
 //         -------------     -------------     -------------     -------------
 // |<- FRONT                                                                  BACK ->|
 //
-// Operations:
-// - push_front
+// ## Operations
+// - `push_front`
 //   Insert new elements into front of the list. Time complexity: O(1).
-// - push_back
+// - `push_back`
 //   Insert new element onto back of the list. Time complexity: O(1).
-// - pop_front
+// - `pop_front`
 //   Remove and return element from front of the list. Time complexity: O(1).
-// - pop_back
+// - `pop_back`
 //   Remove and return element from back of the list. Time complexity: O(1).
 
 pub fn DoublyLinkedList(comptime T: type) type {
