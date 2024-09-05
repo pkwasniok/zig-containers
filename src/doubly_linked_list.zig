@@ -45,6 +45,7 @@ pub fn DoublyLinkedList(comptime T: type) type {
         allocator: std.mem.Allocator,
         head: ?*Node,
         tail: ?*Node,
+        len: usize,
 
         pub fn init(allocator: std.mem.Allocator) Self {
             return Self{
@@ -72,6 +73,8 @@ pub fn DoublyLinkedList(comptime T: type) type {
                 self.head = node;
                 self.tail = node;
             }
+
+            self.len += 1;
         }
 
         pub fn push_back(self: *Self, item: T) !void {
@@ -88,6 +91,8 @@ pub fn DoublyLinkedList(comptime T: type) type {
                 self.tail = node;
                 self.head = node;
             }
+
+            self.len += 1;
         }
 
         pub fn pop_front(self: *Self) ?T {
@@ -108,6 +113,8 @@ pub fn DoublyLinkedList(comptime T: type) type {
 
                 // Destroy node
                 self.allocator.destroy(node);
+
+                self.len -= 1;
 
                 return item;
             }
@@ -134,10 +141,16 @@ pub fn DoublyLinkedList(comptime T: type) type {
                 // Destroy node
                 self.allocator.destroy(node);
 
+                self.len -= 1;
+
                 return item;
             }
 
             return null;
+        }
+
+        pub fn len(self: *Self) usize {
+            return self.len;
         }
     };
 }
