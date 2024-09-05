@@ -14,10 +14,10 @@ const std = @import("std");
 //
 //   *head
 //     |
-// ---------    ---------    ---------    ---------
-// | 1 | * | -> | 2 | * | -> | 3 | * | -> | 4 | * | -> null
-// ---------    ---------    ---------    --------
-// |<- FRONT                                       BACK ->|
+// ┏━━━┳━━━┓    ┏━━━┳━━━┓    ┏━━━┳━━━┓    ┏━━━┳━━━┓
+// ┃ 1 ┃ * ┃ -> ┃ 2 ┃ * ┃ -> ┃ 3 ┃ * ┃ -> ┃ 4 ┃ * ┃ -> null
+// ┗━━━┻━━━┛    ┗━━━┻━━━┛    ┗━━━┻━━━┛    ┗━━━┻━━━┛
+// |<- FRONT                               BACK ->|
 //
 // ## Operations
 // - `push`
@@ -37,6 +37,7 @@ pub fn SinglyLinkedList(comptime T: type) type {
 
         allocator: std.mem.Allocator,
         head: ?*Node,
+        len: usize,
 
         pub fn init(allocator: std.mem.Allocator) Self {
             return Self{
@@ -57,6 +58,8 @@ pub fn SinglyLinkedList(comptime T: type) type {
 
             // Update head
             self.head = node;
+
+            self.len += 1;
         }
 
         pub fn pop(self: *Self) ?T {
@@ -68,10 +71,16 @@ pub fn SinglyLinkedList(comptime T: type) type {
                 // Destroy node
                 self.allocator.destroy(node);
 
+                self.len -= 1;
+
                 return item;
             }
 
             return null;
+        }
+
+        pub fn len(self: *Self) usize {
+            return self.len;
         }
     };
 }
