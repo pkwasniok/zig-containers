@@ -43,6 +43,7 @@ pub fn SinglyLinkedList(comptime T: type) type {
             return Self{
                 .allocator = allocator,
                 .head = null,
+                .len = 0,
             };
         }
 

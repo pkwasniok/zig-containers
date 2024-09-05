@@ -52,6 +52,7 @@ pub fn DoublyLinkedList(comptime T: type) type {
                 .allocator = allocator,
                 .head = null,
                 .tail = null,
+                .len = 0,
             };
         }
 

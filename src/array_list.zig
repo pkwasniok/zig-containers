@@ -114,6 +114,16 @@ pub fn ArrayList(comptime T: type) type {
 
             return null;
         }
+
+        pub fn set(self: *Self, index: usize, item: T) !void {
+            if (self.item) |*items| {
+                if (index < items.len) {
+                    self.items[index] = item;
+                }
+            }
+
+            return error.IndexOutOfBounds;
+        }
     };
 }
 
