@@ -11,6 +11,10 @@ pub const ASCIIString = struct {
     buffer: []u8,
     string: []u8,
 
+    // Initialize
+    //
+    // This function initializes the string but doesn't allocate any memory.
+    //
     pub fn init(allocator: std.mem.Allocator) Self {
         return Self{
             .allocator = allocator,
@@ -19,6 +23,11 @@ pub const ASCIIString = struct {
         };
     }
 
+    // Deinitialize
+    //
+    // This function deinitializes the string by freeing all of the allocated memory
+    // and reseting the pointers.
+    //
     pub fn deinit(self: *Self) void {
         if (self.buffer.len > 0) {
             self.allocator.free(self.buffer);
@@ -34,30 +43,75 @@ pub const ASCIIString = struct {
         try writer.print("{s}", .{self.string});
     }
 
+    // Grow
+    //
+    // This function increases capacity of the string by specified amount.
+    //
     pub fn grow(self: *Self, n: usize) !void {
         self.buffer = try self.allocator.realloc(self.buffer, self.buffer.len + n);
         self.string = self.buffer[0..self.string.len];
     }
 
-    pub fn grow_to(self: *Self, n: usize) !void {
+    // Grow to capacity
+    //
+    // This function increases capacity of the string to be equal to specified amount.
+    //
+    pub fn growTo(self: *Self, n: usize) !void {
         if (self.buffer.len < n) {
             try self.grow(n - self.buffer.len);
         }
     }
 
+    // Shrink
+    //
+    // This function reduces capacity of the string by specified amount.
+    //
     pub fn shrink(self: *Self, n: usize) !void {
         self.buffer = try self.allocator.realloc(self.buffer, self.buffer.len - n);
         self.string = self.buffer[0..self.string.len];
     }
 
+    // Shrink to capacity
+    //
+    // This function reduces capacity of the string to be equal to specified amount.
+    //
+    pub fn shrinkTo(self: *Self, n: usize) !void {
+        // TODO
+        _ = self;
+        _ = n;
+    }
+
+    // Shrink to fit
+    //
+    // This function reduces capacity of the string to be equal to it's length.
+    //
+    pub fn shrinkToFit(self: *Self) void {
+        // TODO
+        _ = self;
+    }
+
+    // Return length
+    //
+    // This funtion returns length of the string, in terms of characters.
+    //
     pub fn length(self: *Self) usize {
         return self.string.len;
     }
 
+    // Return capacity
+    //
+    // This function returns the size of allocated memory, in terms of characters.
+    // The capacity is always equal or greater than length of the string, so it
+    // is not the same as length of the string.
+    //
     pub fn capacity(self: *Self) usize {
         return self.buffer.len;
     }
 
+    // Append character to string
+    //
+    // This function appends single character to the end.
+    //
     pub fn push(self: *Self, char: u8) !void {
         try self.grow_to(self.string.len + 1);
 
@@ -65,6 +119,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len + 1];
     }
 
+    // Append to string
+    //
+    // This function appends string to the end.
+    //
     pub fn pushString(self: *Self, string: []const u8) !void {
         try self.grow_to(self.string.len + string.len);
 
@@ -75,6 +133,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len + string.len];
     }
 
+    // Remove last character
+    //
+    // This function removes single character from the end.
+    //
     pub fn pop(self: *Self) ?u8 {
         if (self.string.len == 0) {
             return null;
@@ -85,6 +147,10 @@ pub const ASCIIString = struct {
         return char;
     }
 
+    // Remove last characters
+    //
+    // This function removes characters from the end.
+    //
     pub fn popString(self: *Self, len: usize) void {
         if (len > self.string.len) {
             self.string = &.{};
@@ -94,6 +160,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len - len];
     }
 
+    // Insert character into string
+    //
+    // This function inserts character at specified index.
+    //
     pub fn insert(self: *Self, index: usize, char: u8) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -109,6 +179,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len + 1];
     }
 
+    // Insert into string
+    //
+    // This function inserts string at specified index.
+    //
     pub fn insertString(self: *Self, index: usize, string: []const u8) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -127,6 +201,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len + string.len];
     }
 
+    // Remove character from string
+    //
+    // This function removes single character at specified index.
+    //
     pub fn remove(self: *Self, index: usize) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -139,6 +217,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len - 1];
     }
 
+    // Remove from string
+    //
+    // This function removes substring at specified index.
+    //
     pub fn removeString(self: *Self, index: usize, len: usize) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -160,6 +242,10 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. self.string.len - len];
     }
 
+    // Replace chracter
+    //
+    // This function replaces single character at specified index.
+    //
     pub fn replace(self: *Self, index: usize, char: u8) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -168,6 +254,10 @@ pub const ASCIIString = struct {
         self.buffer[index] = char;
     }
 
+    // Replace string
+    //
+    // This function replaces substring at specified index.
+    //
     pub fn replaceString(self: *Self, index: usize, string: []const u8) !void {
         if (index >= self.string.len) {
             return ASCIIStringError.IndexOutOfBounds;
@@ -186,10 +276,19 @@ pub const ASCIIString = struct {
         self.string = self.buffer[0 .. index + string.len];
     }
 
+    // Clear string
+    //
+    // This function removes all characters but doesn't free any of the
+    // allocated memory.
+    //
     pub fn clear(self: *Self) void {
         self.string = self.buffer[0..0];
     }
 
+    // Remove whitespace characters from the front
+    //
+    // This function removes all whitespace characters from the front.
+    //
     pub fn trimFront(self: *Self) !void {
         var len_to_trim: usize = 0;
 
@@ -204,6 +303,10 @@ pub const ASCIIString = struct {
         try self.removeString(0, len_to_trim);
     }
 
+    // Remove whitespace characters from the end
+    //
+    // This function removes all whitespace characters from the end.
+    //
     pub fn trimEnd(self: *Self) !void {
         var len_to_trim: usize = 0;
 
@@ -218,21 +321,72 @@ pub const ASCIIString = struct {
         try self.removeString(self.string.len - len_to_trim, len_to_trim);
     }
 
+    // Remove whitespace characters
+    //
+    // This function removes all whitespace characters.
+    //
     pub fn trim(self: *Self) !void {
         try self.trimFront();
         try self.trimEnd();
     }
 
+    pub fn toLowercase(self: *Self) void {
+        // TODO
+        _ = self;
+    }
+
+    pub fn toUppercase(self: *Self) void {
+        // TODO
+        _ = self;
+    }
+
+    // Check if starts with specified substring
     pub fn startsWith(self: *Self, string: []const u8) bool {
         return std.mem.startsWith(u8, self.string, string);
     }
 
+    // Check if ends with specified substring
     pub fn endsWith(self: *Self, string: []const u8) bool {
         return std.mem.endsWith(u8, self.string, string);
     }
 
+    // Get index of first occurence of specified substring
+    // Deprecated
     pub fn indexOf(self: *Self, string: []const u8) ?usize {
+        // TODO: Delete
         return std.mem.indexOf(u8, self.string, string);
+    }
+
+    // Find first occurence of substring.
+    //
+    // This function finds the first occurence of a substring and returns it's index.
+    //
+    pub fn findFirst(self: *Self, needle: []const u8) ?usize {
+        // TODO
+        _ = self;
+        _ = needle;
+    }
+
+    // Find last occurence of substring.
+    //
+    // This function finds the last occurence of a substring and returns it's index.
+    //
+    pub fn findLast(self: *Self, needle: []const u8) ?usize {
+        // TODO
+        _ = self;
+        _ = needle;
+    }
+
+    // Find first occurence of substring, starting from specified index.
+    //
+    // This function finds the firs occurence of a substring after specified
+    // index and returns it's index.
+    //
+    pub fn findFrom(self: *Self, index: usize, needle: []const u8) ?usize {
+        // TODO
+        _ = self;
+        _ = index;
+        _ = needle;
     }
 };
 
